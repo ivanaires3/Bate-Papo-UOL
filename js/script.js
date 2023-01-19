@@ -19,7 +19,7 @@ function entrarNaSala() {
 
 function nomeChegou() {
     let entrou = `
-    <div class="mensagem on-off">
+    <div class="mensagem on-off" data-test="message">
         <p><strong>${nome.name}</strong> entra na sala...</p>
     </div>
     `;
@@ -55,7 +55,7 @@ function mostrarBatePapo() {
     for (let i = 0; i < conversas.length; i++) {
         if (conversas[i].type === "status") {
             let template = `
-        <div class="mensagem on-off">
+        <div class="mensagem on-off" data-test="message">
             <p><strong>${conversas[i].from}</strong> ${conversas[i].text}</p>
         </div>
         `;
@@ -63,7 +63,7 @@ function mostrarBatePapo() {
             BatePapo.innerHTML = BatePapo.innerHTML + template;
         } else if (conversas[i].type === "private_message") {
             let template = `
-        <div class="mensagem reservadamente">
+        <div class="mensagem reservadamente" data-test="message">
             <p><strong>${conversas[i].from}</strong> para <strong>${conversas[i].to}</strong>: ${conversas[i].text}</p>
         </div>
         `;
@@ -71,7 +71,7 @@ function mostrarBatePapo() {
             BatePapo.innerHTML = BatePapo.innerHTML + template;
         } else {
             let template = `
-        <div class="mensagem">
+        <div class="mensagem" data-test="message">
             <p><strong>${conversas[i].from}</strong> para <strong>${conversas[i].to}</strong>: ${conversas[i].text}</p>
         </div>
         `;
