@@ -1,10 +1,13 @@
 let conversas = []
 
-const nomeUsuario = { name: prompt("Digite seu nome de usuario") }
+const nomeUsuario = prompt("Digite seu nome de usuario")
+
+let nome = { name: nomeUsuario }
+
+const BatePapo = document.querySelector('.bate-papo');
+BatePapo.scrollIntoView(false)
 
 function mostrarBatePapo() {
-
-    const BatePapo = document.querySelector('.bate-papo');
 
     BatePapo.innerHTML = '';
 
@@ -36,9 +39,11 @@ function mostrarBatePapo() {
         }
     }
 
+    const praBaixo = document.querySelector('.enviarMensagem');
+    praBaixo.scrollIntoView(false)
 }
 
-pegarConversasDoServidor();
+setInterval(pegarConversasDoServidor, 3000);
 
 function pegarConversasDoServidor() {
     const promessa = axios.get('https://mock-api.driven.com.br/api/v6/uol/messages')
@@ -59,17 +64,42 @@ function conversaNaoChegou() {
 entrarNaSala();
 
 function entrarNaSala() {
-    const promessa = axios.post("https://mock-api.driven.com.br/api/v6/uol/participants", nomeUsuario);
+    const promessa = axios.post("https://mock-api.driven.com.br/api/v6/uol/participants", nome);
     promessa.then(nomeChegou);
     promessa.catch(nomeNaoChegou);
 }
 
-function nomeChegou() {
+function nomeChegou(resposta) {
     console.log("tudo certo")
+    console.log(resposta)
 }
 
 function nomeNaoChegou() {
     console.log("algo deu errado")
+}
+
+/*******************************/
+function enviarMensagem() {
+    let mensagemDigitada = document.querySelector('input').value;
+
+    let dadosDaMensagem = {
+        from: nomeUsuario,
+        to: "Todos",
+        text: mensagemDigitada,
+        type: "message"
+    }
+
+    const promessa = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', dadosDaMensagem);
+    promessa.then(mensagemChegou);
+    promessa.catch(mensagemNaoChegou);
+}
+
+function mensagemChegou() {
+
+}
+
+function mensagemNaoChegou() {
+    console.log("não chegou")
 }
 
 /**************************/
@@ -77,7 +107,7 @@ function nomeNaoChegou() {
 setInterval(verificarUsuario, 5000);
 
 function verificarUsuario() {
-    const promessa = axios.post('https://mock-api.driven.com.br/api/v6/uol/status', nomeUsuario);
+    const promessa = axios.post('https://mock-api.driven.com.br/api/v6/uol/status', nome);
     promessa.then(aindaLogado);
     promessa.catch(usuarioSaiu);
 }
