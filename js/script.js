@@ -5,7 +5,6 @@ const nomeUsuario = prompt("Digite seu nome de usuario")
 let nome = { name: nomeUsuario }
 
 const BatePapo = document.querySelector('.bate-papo');
-BatePapo.scrollIntoView(false)
 
 function mostrarBatePapo() {
 
@@ -15,7 +14,7 @@ function mostrarBatePapo() {
         if (conversas[i].type === "status") {
             let template = `
         <div class="mensagem on-off">
-            <p><strong>${conversas[i].from}</strong> para <strong>${conversas[i].to}</strong>: ${conversas[i].text}</p>
+            <p><strong>${conversas[i].from}</strong> ${conversas[i].text}</p>
         </div>
         `;
 
@@ -64,6 +63,15 @@ function conversaNaoChegou() {
 entrarNaSala();
 
 function entrarNaSala() {
+
+    let entrou = `
+    <div class="mensagem on-off">
+        <p><strong>${nome.name}</strong> entrou na sala...</p>
+    </div>
+    `;
+
+    BatePapo.innerHTML = BatePapo.innerHTML + entrou
+
     const promessa = axios.post("https://mock-api.driven.com.br/api/v6/uol/participants", nome);
     promessa.then(nomeChegou);
     promessa.catch(nomeNaoChegou);
@@ -82,6 +90,17 @@ function nomeNaoChegou() {
 function enviarMensagem() {
     let mensagemDigitada = document.querySelector('input').value;
 
+    let mensagem = `
+    <div class="mensagem">
+        <p><strong>${nome.name}</strong> para <strong>Todos</strong>: ${mensagemDigitada}</p>
+    </div>
+    `;
+
+    BatePapo.innerHTML = BatePapo.innerHTML + mensagem
+
+    const praBaixo = document.querySelector('.enviarMensagem');
+    praBaixo.scrollIntoView(false)
+
     let dadosDaMensagem = {
         from: nomeUsuario,
         to: "Todos",
@@ -92,9 +111,12 @@ function enviarMensagem() {
     const promessa = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', dadosDaMensagem);
     promessa.then(mensagemChegou);
     promessa.catch(mensagemNaoChegou);
+
+    document.querySelector('input').value = ''
 }
 
-function mensagemChegou() {
+function mensagemChegou(resposta) {
+    console.log(resposta)
 
 }
 
