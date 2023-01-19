@@ -1,10 +1,52 @@
 let conversas = []
 
-const nomeUsuario = prompt("Digite seu nome de usuario")
+let nomeUsuario = prompt("Digite seu nome de usuario")
 
 let nome = { name: nomeUsuario }
 
+let online = []
+
 const BatePapo = document.querySelector('.bate-papo');
+
+entrarNaSala();
+
+function entrarNaSala() {
+
+    const promessa = axios.post("https://mock-api.driven.com.br/api/v6/uol/participants", nome);
+    promessa.then(nomeChegou);
+    promessa.catch(nomeNaoChegou);
+}
+
+function nomeChegou() {
+    let entrou = `
+    <div class="mensagem on-off">
+        <p><strong>${nome.name}</strong> entra na sala...</p>
+    </div>
+    `;
+
+    BatePapo.innerHTML = BatePapo.innerHTML + entrou;
+
+    const praBaixo = document.querySelector('.enviarMensagem');
+    praBaixo.scrollIntoView(false)
+}
+let usuarioInvalido;
+
+function nomeNaoChegou(erro) {
+    usuarioInvalido = erro.response.status;
+    while (usuarioInvalido === 400) {
+        alterarNome();
+    }
+}
+
+function alterarNome() {
+    let novoNome = { name: prompt("Este nome ja esta em uso, escolha outro nome") }
+    while (novoNome === nomeUsuario) {
+        novoNome = { name: prompt("Este nome ja esta em uso, escolha outro nome") }
+    }
+    usuarioInvalido = null
+    nome = novoNome;
+    entrarNaSala()
+}
 
 function mostrarBatePapo() {
 
@@ -37,12 +79,10 @@ function mostrarBatePapo() {
             BatePapo.innerHTML = BatePapo.innerHTML + template;
         }
     }
-
-    const praBaixo = document.querySelector('.enviarMensagem');
-    praBaixo.scrollIntoView(false)
 }
 
-setInterval(pegarConversasDoServidor, 3000);
+pegarConversasDoServidor();
+setInterval(pegarConversasDoServidor, 3000)
 
 function pegarConversasDoServidor() {
     const promessa = axios.get('https://mock-api.driven.com.br/api/v6/uol/messages')
@@ -60,32 +100,6 @@ function conversaNaoChegou() {
     console.log("deu ruim")
 }
 
-entrarNaSala();
-
-function entrarNaSala() {
-
-    let entrou = `
-    <div class="mensagem on-off">
-        <p><strong>${nome.name}</strong> entrou na sala...</p>
-    </div>
-    `;
-
-    BatePapo.innerHTML = BatePapo.innerHTML + entrou
-
-    const promessa = axios.post("https://mock-api.driven.com.br/api/v6/uol/participants", nome);
-    promessa.then(nomeChegou);
-    promessa.catch(nomeNaoChegou);
-}
-
-function nomeChegou(resposta) {
-    console.log("tudo certo")
-    console.log(resposta)
-}
-
-function nomeNaoChegou() {
-    console.log("algo deu errado")
-}
-
 /*******************************/
 function enviarMensagem() {
     let mensagemDigitada = document.querySelector('input').value;
@@ -98,11 +112,8 @@ function enviarMensagem() {
 
     BatePapo.innerHTML = BatePapo.innerHTML + mensagem
 
-    const praBaixo = document.querySelector('.enviarMensagem');
-    praBaixo.scrollIntoView(false)
-
     let dadosDaMensagem = {
-        from: nomeUsuario,
+        from: nome.name,
         to: "Todos",
         text: mensagemDigitada,
         type: "message"
@@ -115,8 +126,9 @@ function enviarMensagem() {
     document.querySelector('input').value = ''
 }
 
-function mensagemChegou(resposta) {
-    console.log(resposta)
+function mensagemChegou() {
+    const praBaixo = document.querySelector('.enviarMensagem');
+    praBaixo.scrollIntoView(false)
 
 }
 
@@ -139,7 +151,9 @@ function aindaLogado() {
 }
 
 function usuarioSaiu() {
-    console.log("o usuario saiu")
+    alert("Você foi desconectado, a pagina será reiniciada")
+    alert('Se o problema persistir entre em contato com o suporte')
+    location.reload(true)
 }
 
 
