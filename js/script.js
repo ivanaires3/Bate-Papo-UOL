@@ -18,6 +18,8 @@ function entrarNaSala() {
 }
 
 function nomeChegou() {
+    pegarConversasDoServidor();
+
     let entrou = `
     <div class="mensagem on-off" data-test="message">
         <p><strong>${nome.name}</strong> entra na sala...</p>
@@ -25,9 +27,6 @@ function nomeChegou() {
     `;
 
     BatePapo.innerHTML = BatePapo.innerHTML + entrou;
-
-    const praBaixo = document.querySelector('.enviarMensagem');
-    praBaixo.scrollIntoView(false)
 }
 let usuarioInvalido;
 
@@ -79,9 +78,10 @@ function mostrarBatePapo() {
             BatePapo.innerHTML = BatePapo.innerHTML + template;
         }
     }
-}
 
-pegarConversasDoServidor();
+    const praBaixo = document.querySelector('.enviarMensagem');
+    praBaixo.scrollIntoView(false)
+}
 setInterval(pegarConversasDoServidor, 3000)
 
 function pegarConversasDoServidor() {
@@ -151,8 +151,6 @@ function aindaLogado() {
 }
 
 function usuarioSaiu() {
-    alert("Você foi desconectado, a pagina será reiniciada")
-    alert('Se o problema persistir entre em contato com o suporte')
     location.reload(true)
 }
 
