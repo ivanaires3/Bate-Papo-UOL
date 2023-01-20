@@ -46,6 +46,10 @@
     background-color: #ffdede;
 }
 
+.none {
+    display: none;
+}
+
 .enviarMensagem {
     width: 100%;
     height: 80px;
