@@ -4,6 +4,8 @@ let nomeUsuario = prompt("Digite seu nome de usuario")
 
 let nome = { name: nomeUsuario }
 
+let usuarioInvalido;
+
 const BatePapo = document.querySelector('.bate-papo');
 
 entrarNaSala();
@@ -17,9 +19,9 @@ function entrarNaSala() {
 
 function nomeChegou() {
 
-    pegarConversasDoServidor();
+    pegarConversasDoServidor()
+
 }
-let usuarioInvalido;
 
 function nomeNaoChegou(erro) {
     usuarioInvalido = erro.response.status;
@@ -46,7 +48,7 @@ function mostrarBatePapo() {
         if (conversas[i].type === "status") {
             let template = `
         <div class="mensagem on-off" data-test="message">
-            <p><strong>${conversas[i].from}</strong> ${conversas[i].text}</p>
+            <p>${conversas[i].time} <strong>${conversas[i].from}</strong> ${conversas[i].text}</p>
         </div>
         `;
 
@@ -54,7 +56,7 @@ function mostrarBatePapo() {
         } else if (conversas[i].type === "private_message" && conversas[i].to === nome.name) {
             let template = `
         <div class="mensagem reservadamente" data-test="message">
-            <p><strong>${conversas[i].from}</strong> para <strong>${conversas[i].to}</strong>: ${conversas[i].text}</p>
+            <p>${conversas[i].time} <strong>${conversas[i].from}</strong> para <strong>${conversas[i].to}</strong>: ${conversas[i].text}</p>
         </div>
         `;
 
@@ -62,21 +64,25 @@ function mostrarBatePapo() {
         } else {
             let template = `
         <div class="mensagem" data-test="message">
-            <p><strong>${conversas[i].from}</strong> para <strong>${conversas[i].to}</strong>: ${conversas[i].text}</p>
+            <p>${conversas[i].time} <strong>${conversas[i].from}</strong> para <strong>${conversas[i].to}</strong>: ${conversas[i].text}</p>
         </div>
         `;
 
             BatePapo.innerHTML = BatePapo.innerHTML + template;
         }
     }
-}
 
-setInterval(pegarConversasDoServidor, 3000)
+    const praBaixo = document.querySelector('.enviarMensagem');
+    praBaixo.scrollIntoView(false)
+
+}
 
 function pegarConversasDoServidor() {
     const promessa = axios.get('https://mock-api.driven.com.br/api/v6/uol/messages')
     promessa.then(conversaChegou);
     promessa.catch(conversaNaoChegou);
+
+    setInterval(atualizarConversasDoServidor, 3000)
 }
 
 function conversaChegou(resposta) {
@@ -89,17 +95,27 @@ function conversaNaoChegou() {
     console.log("deu ruim")
 }
 
+/************************/
+
+function atualizarConversasDoServidor() {
+    const promessa = axios.get('https://mock-api.driven.com.br/api/v6/uol/messages')
+    promessa.then(conversaAtualizou);
+    promessa.catch(conversaNaoAtualizou);
+}
+
+function conversaAtualizou(resposta) {
+    conversas = resposta.data;
+
+    mostrarBatePapo();
+}
+
+function conversaNaoAtualizou() {
+    console.log("deu ruim")
+}
+
 /*******************************/
 function enviarMensagem() {
     let mensagemDigitada = document.querySelector('input').value;
-
-    let mensagem = `
-    <div class="mensagem">
-        <p><strong>${nome.name}</strong> para <strong>Todos</strong>: ${mensagemDigitada}</p>
-    </div>
-    `;
-
-    BatePapo.innerHTML = BatePapo.innerHTML + mensagem;
 
     let dadosDaMensagem = {
         from: nome.name,
@@ -116,6 +132,7 @@ function enviarMensagem() {
 }
 
 function mensagemChegou() {
+
     const praBaixo = document.querySelector('.enviarMensagem');
     praBaixo.scrollIntoView(false)
 
