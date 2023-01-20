@@ -157,3 +157,12 @@ function aindaLogado() {
 function usuarioSaiu() {
     window.location.reload()
 }
+
+document.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+        const botao = document.querySelector('button');
+
+        botao.click();
+    }
+})
+
