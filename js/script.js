@@ -115,16 +115,8 @@ function conversaNaoAtualizou() {
 function enviarMensagem() {
     let mensagemDigitada = document.querySelector('input').value;
 
-    let mensagem = `
-    <div class="mensagem">
-        <p><strong>${nome.name}</strong> para <strong>Todos</strong>: ${mensagemDigitada}</p>
-    </div>
-    `;
-
-    BatePapo.innerHTML = BatePapo.innerHTML + mensagem
-
     let dadosDaMensagem = {
-        from: nome.name,
+        from: `${nome.name}`,
         to: "Todos",
         text: mensagemDigitada,
         type: "message"
