@@ -18,16 +18,8 @@ function entrarNaSala() {
 }
 
 function nomeChegou() {
-    let entrou = `
-    <div class="mensagem on-off" data-test="message">
-        <p><strong>${nome.name}</strong> entra na sala...</p>
-    </div>
-    `;
 
-    BatePapo.innerHTML = BatePapo.innerHTML + entrou;
-
-    const praBaixo = document.querySelector('.enviarMensagem');
-    praBaixo.scrollIntoView(false)
+    pegarConversasDoServidor();
 }
 let usuarioInvalido;
 
@@ -61,7 +53,7 @@ function mostrarBatePapo() {
         `;
 
             BatePapo.innerHTML = BatePapo.innerHTML + template;
-        } else if (conversas[i].type === "private_message") {
+        } else if (conversas[i].type === "private_message" && conversas[i].to === nome.name) {
             let template = `
         <div class="mensagem reservadamente" data-test="message">
             <p><strong>${conversas[i].from}</strong> para <strong>${conversas[i].to}</strong>: ${conversas[i].text}</p>
@@ -81,9 +73,6 @@ function mostrarBatePapo() {
     }
 }
 
-pegarConversasDoServidor();
-setInterval(pegarConversasDoServidor, 3000)
-
 function pegarConversasDoServidor() {
     const promessa = axios.get('https://mock-api.driven.com.br/api/v6/uol/messages')
     promessa.then(conversaChegou);
@@ -94,11 +83,33 @@ function conversaChegou(resposta) {
     conversas = resposta.data;
 
     mostrarBatePapo();
+
+    setInterval(atualizarConversasDoServidor, 3000)
+
+    const praBaixo = document.querySelector('.enviarMensagem');
+    praBaixo.scrollIntoView(false)
 }
 
 function conversaNaoChegou() {
     console.log("deu ruim")
 }
+
+function atualizarConversasDoServidor() {
+    const promessa = axios.get('https://mock-api.driven.com.br/api/v6/uol/messages')
+    promessa.then(conversaAtualizou);
+    promessa.catch(conversaNaoAtualizou);
+}
+
+function conversaAtualizou(resposta) {
+    conversas = resposta.data;
+
+    mostrarBatePapo();
+}
+
+function conversaNaoAtualizou() {
+    console.log("deu ruim")
+}
+
 
 /*******************************/
 function enviarMensagem() {
