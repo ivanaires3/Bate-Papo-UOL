@@ -132,11 +132,12 @@ function enviarMensagem() {
 function mensagemChegou() {
     const praBaixo = document.querySelector('.enviarMensagem');
     praBaixo.scrollIntoView(false)
+    atualizarConversasDoServidor()
 
 }
 
 function mensagemNaoChegou() {
-    console.log("não chegou")
+    window.location.reload()
 }
 
 /**************************/
@@ -154,7 +155,5 @@ function aindaLogado() {
 }
 
 function usuarioSaiu() {
-    alert("Você foi desconectado, a pagina será reiniciada")
-    alert('Se o problema persistir entre em contato com o suporte')
-    location.reload(true)
+    window.location.reload()
 }
