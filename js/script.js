@@ -69,10 +69,9 @@ function mostrarBatePapo() {
         `;
 
             BatePapo.innerHTML = BatePapo.innerHTML + template;
-        } else {
+        } else if (conversas[i].type === "private_message" && conversas[i].to !== nome.name) {
             let template = `
-        <div class="mensagem none" data-test="message">
-            <p><strong>${conversas[i].from}</strong> para <strong>${conversas[i].to}</strong>: ${conversas[i].text}</p>
+        <div class="none" data-test="message">
         </div>
         `;
 
