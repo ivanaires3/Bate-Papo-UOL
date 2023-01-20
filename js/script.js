@@ -4,8 +4,6 @@ let nomeUsuario = prompt("Digite seu nome de usuario")
 
 let nome = { name: nomeUsuario }
 
-let online = []
-
 const BatePapo = document.querySelector('.bate-papo');
 
 entrarNaSala();
@@ -18,15 +16,8 @@ function entrarNaSala() {
 }
 
 function nomeChegou() {
+
     pegarConversasDoServidor();
-
-    let entrou = `
-    <div class="mensagem on-off" data-test="message">
-        <p><strong>${nome.name}</strong> entra na sala...</p>
-    </div>
-    `;
-
-    BatePapo.innerHTML = BatePapo.innerHTML + entrou;
 }
 let usuarioInvalido;
 
@@ -44,7 +35,7 @@ function alterarNome() {
     }
     usuarioInvalido = null
     nome = novoNome;
-    entrarNaSala()
+    entrarNaSala();
 }
 
 function mostrarBatePapo() {
@@ -60,7 +51,7 @@ function mostrarBatePapo() {
         `;
 
             BatePapo.innerHTML = BatePapo.innerHTML + template;
-        } else if (conversas[i].type === "private_message") {
+        } else if (conversas[i].type === "private_message" && conversas[i].to === nome.name) {
             let template = `
         <div class="mensagem reservadamente" data-test="message">
             <p><strong>${conversas[i].from}</strong> para <strong>${conversas[i].to}</strong>: ${conversas[i].text}</p>
@@ -78,10 +69,8 @@ function mostrarBatePapo() {
             BatePapo.innerHTML = BatePapo.innerHTML + template;
         }
     }
-
-    const praBaixo = document.querySelector('.enviarMensagem');
-    praBaixo.scrollIntoView(false)
 }
+
 setInterval(pegarConversasDoServidor, 3000)
 
 function pegarConversasDoServidor() {
@@ -110,7 +99,7 @@ function enviarMensagem() {
     </div>
     `;
 
-    BatePapo.innerHTML = BatePapo.innerHTML + mensagem
+    BatePapo.innerHTML = BatePapo.innerHTML + mensagem;
 
     let dadosDaMensagem = {
         from: nome.name,
@@ -133,7 +122,7 @@ function mensagemChegou() {
 }
 
 function mensagemNaoChegou() {
-    console.log("não chegou")
+    location.reload(true)
 }
 
 /**************************/
