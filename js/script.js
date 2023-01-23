@@ -4,8 +4,6 @@ let nomeUsuario = prompt("Digite seu nome de usuario")
 
 let nome = { name: nomeUsuario }
 
-let online = []
-
 const BatePapo = document.querySelector('.bate-papo');
 
 entrarNaSala();
@@ -70,7 +68,13 @@ function mostrarBatePapo() {
 
             BatePapo.innerHTML = BatePapo.innerHTML + template;
         } else if (conversas[i].type === "private_message" && conversas[i].to !== nome.name) {
-            document.querySelector('.reservadamente').classList.add('none')
+            let template = `
+        <div class="mensagem reservadamente none" data-test="message">
+            <p><strong>${conversas[i].from}</strong> para <strong>${conversas[i].to}</strong>: ${conversas[i].text}</p>
+        </div>
+        `;
+
+            BatePapo.innerHTML = BatePapo.innerHTML + template;
         }
     }
 }
@@ -167,4 +171,3 @@ document.addEventListener("keypress", function (e) {
         botao.click();
     }
 })
-
